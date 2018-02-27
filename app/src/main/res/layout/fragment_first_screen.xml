@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context="org.hcilab.recordsensors.FirstScreenFragment"
+    tools:showIn="@layout/activity_first_screen">
+
+    <ToggleButton
+        android:id="@+id/TBTurnRightAcute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOff="Turn Right ON"
+        android:textOn="Turn Right Off"
+        tools:layout_editor_absoluteX="35dp"
+        tools:layout_editor_absoluteY="121dp"
+        tools:text="TurnRightAcute" />
+
+    <ToggleButton
+        android:id="@+id/TBTurnLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:text="ToggleButton"
+        android:textOff="Turn Left On"
+        app:layout_constraintLeft_toRightOf="@+id/TBTurnRightAcute"
+        tools:layout_editor_absoluteY="121dp" />
+
+    <ToggleButton
+        android:id="@+id/TBZigZagR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:text="ToggleButton"
+        android:textOff="ZigZagR On"
+        android:textOn="ZigZagR Off"
+        app:layout_constraintLeft_toRightOf="@+id/TBTurnLeft"
+        tools:layout_editor_absoluteY="121dp" />
+
+    <ToggleButton
+        android:id="@+id/TBZigZagL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="ToggleButton"
+        android:textOff="TBZigZagL On"
+        android:textOn="TBZigZagL Off"
+        app:layout_constraintTop_toBottomOf="@+id/TBTurnRightAcute"
+        tools:layout_editor_absoluteX="43dp" />
+
+    <ToggleButton
+        android:id="@+id/TBBreak"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="ToggleButton"
+        android:textOff="Break On"
+        android:textOn="Break Off"
+        app:layout_constraintLeft_toRightOf="@+id/TBZigZagL"
+        app:layout_constraintTop_toBottomOf="@+id/TBTurnLeft" />
+
+    <ToggleButton
+        android:id="@+id/TBAccelerate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="0dp"
+        android:text="ToggleButton"
+        android:textOff="Accelrate On"
+        app:layout_constraintLeft_toRightOf="@+id/TBBreak"
+        app:layout_constraintTop_toBottomOf="@+id/TBZigZagR" />
+
+    <TextView
+        android:id="@+id/textViewLocation"
+        android:layout_width="96dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="8dp"
+        android:text="Location"
+        app:layout_constraintTop_toBottomOf="@+id/TBZigZagL"
+        tools:layout_editor_absoluteX="43dp" />
+
+    <TextView
+        android:id="@+id/textViewAcc"
+        android:layout_width="227dp"
+        android:layout_height="45dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        app:layout_constraintLeft_toRightOf="@+id/textViewLocation"
+        app:layout_constraintTop_toBottomOf="@+id/TBBreak" />
+
+    <ToggleButton
+        android:id="@+id/TBStartRecording"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="36dp"
+        android:onClick="StartMe"
+        android:text="ToggleButton"
+        android:textOff="Start"
+        android:textOn="Turn Off"
+        app:layout_constraintLeft_toRightOf="@+id/textViewLocation"
+        app:layout_constraintTop_toBottomOf="@+id/textViewAcc" />
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "14116328341",
+    "firebase_url": "https://recordallsensor.firebaseio.com",
+    "project_id": "recordallsensor",
+    "storage_bucket": "recordallsensor.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:14116328341:android:46a2cac56bfdb287",
+        "android_client_info": {
+          "package_name": "org.hcilab.recordsensors"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "14116328341-a98u1v01g8bfeinm63lk92kkqo1hafoc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB447iswh5md5jGGEAV_9KOnNPw3fyoECw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
