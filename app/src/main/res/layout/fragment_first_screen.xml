@@ -103,4 +103,25 @@
         android:textOn="Turn Off"
         app:layout_constraintLeft_toRightOf="@+id/textViewLocation"
         app:layout_constraintTop_toBottomOf="@+id/textViewAcc" />
+
+
+    <TextView
+        android:id="@+id/textViewProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTotalCounts"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/textViewTotalCounts" />
+
+    <TextView
+        android:id="@+id/textViewTotalCounts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="0"
+        app:layout_constraintLeft_toLeftOf="@+id/TBStartRecording"
+        app:layout_constraintTop_toBottomOf="@+id/TBStartRecording" />
 </android.support.constraint.ConstraintLayout>

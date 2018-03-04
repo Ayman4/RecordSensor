@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -54,14 +55,19 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
     double CurrecntLocationAlt=0;
     private FirebaseDatabase database;
     DatabaseReference nodeReference ;
-    int count;
+    static public Integer count;
+    Integer countFinished;
     float x;
     float y;
     float z;
 
     TextView txtviewAcc;
 
+
     TextView txtviewloc;
+    TextView txtviewTotalcount;
+    TextView txtviewProgress;
+
 
 
     public String GetSelectedGestureName()
@@ -142,7 +148,8 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
         txtviewAcc= (TextView) findViewById(R.id.textViewAcc);
 
         txtviewloc = (TextView) findViewById(R.id.textViewLocation);
-
+        txtviewTotalcount=(TextView) findViewById(R.id.textViewTotalCounts);
+        txtviewProgress=(TextView) findViewById(R.id.textViewProgress);
 
        /* List<Sensor> listsensor =  sm.getSensorList(Sensor.TYPE_ALL);
 
@@ -162,8 +169,8 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
        // ToggleButton tb=(ToggleButton) findViewById(R.id.toggleButton);
         timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
         nodeReference = database.getReference().child(timeStamp);
-        count=0;
-
+        count=1;
+        countFinished=1;
 
     }
 
@@ -258,7 +265,19 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
 
                 // Write a message to the database
             final String finalDataa = Dataa;
-            Thread t = new Thread(new Runnable() {
+            //int MyProgres=((Integer.parseInt((String) txtviewProgress.getText()))/count)*100;
+           //progressBar.setProgress(MyProgres);
+
+
+            BackGroundWorker bg=new BackGroundWorker(this);
+            String GestureName=GetSelectedGestureName();
+            bg.setCountFinished(txtviewProgress);
+            bg.execute(timeStamp.toString(),String.valueOf(CurrecntLocationLong),String.valueOf(CurrecntLocationAlt),GestureName,String.valueOf(x),String.valueOf(y),String.valueOf(z));
+            count++;
+            txtviewTotalcount.setText(""+count);
+            //txtviewProgress.setText(count);
+
+            /*Thread t = new Thread(new Runnable() {
                     public void run() {
                         String timeStamp1 = new SimpleDateFormat("HH-mm-ss-SSS").format(new Date());
 
@@ -278,6 +297,7 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
                 });
 
                 t.start();
+                */
 
 
 
