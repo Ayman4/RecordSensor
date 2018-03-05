@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -31,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -46,9 +48,11 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
     static {
         FirebaseDatabase.getInstance().setPersistenceEnabled(false);
     }
+     int AverageRate=5;
     SensorManager sm;
     //Sensor s;
-    Sensor Gyro,LinearAcc,MyGyro;
+    //Sensor Gyro,LinearAcc,MyGyro;
+    Sensor Accelerometer;
     LocationManager lm;
     String timeStamp;
     double CurrecntLocationLong=0;
@@ -60,9 +64,10 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
     float x;
     float y;
     float z;
-
+    float AverageACC[]=new float[3];
+    int windowAverage=0;
     TextView txtviewAcc;
-
+    ArrayList<PointACC> AllPoints=new ArrayList<PointACC>(10);
 
     TextView txtviewloc;
     TextView txtviewTotalcount;
@@ -144,13 +149,45 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
 
 
 
-        StartRecording();
+
         txtviewAcc= (TextView) findViewById(R.id.textViewAcc);
 
         txtviewloc = (TextView) findViewById(R.id.textViewLocation);
         txtviewTotalcount=(TextView) findViewById(R.id.textViewTotalCounts);
         txtviewProgress=(TextView) findViewById(R.id.textViewProgress);
 
+
+
+        SeekBar s = (SeekBar) findViewById(R.id.seekBarAveraging);
+        s.setProgress(5);
+        s.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+          //      Toast.makeText(getBaseContext(), "discrete = " + String.valueOf(discrete), Toast.LENGTH_SHORT).show();
+            }
+
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+
+            }
+
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // TODO Auto-generated method stub
+                // To convert it as discrete value
+                AverageRate= progress;
+
+            }
+        });
+
+
+        StartRecording();
        /* List<Sensor> listsensor =  sm.getSensorList(Sensor.TYPE_ALL);
 
 
@@ -164,6 +201,8 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
 
 
     }
+
+
     private void StartRecording() {
 
        // ToggleButton tb=(ToggleButton) findViewById(R.id.toggleButton);
@@ -171,6 +210,10 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
         nodeReference = database.getReference().child(timeStamp);
         count=1;
         countFinished=1;
+        windowAverage=0;
+        AverageACC=new float[3];
+        txtviewProgress.setText(""+0);
+        AllPoints.clear();
 
     }
 
@@ -179,7 +222,7 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
                 sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_FASTEST);
 
-        sm.registerListener(this,sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),SensorManager.SENSOR_DELAY_FASTEST);
+       // sm.registerListener(this,sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),SensorManager.SENSOR_DELAY_FASTEST);
 
         //sm.registerListener(this,sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_FASTEST);
     }
@@ -222,7 +265,6 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
         z=event.values[2];
 
 
-
         String Dataa="";
         String DataG="";
 
@@ -230,6 +272,8 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
             case Sensor.TYPE_ACCELEROMETER:
                 // copy new accelerometer data into accel array
                 // then calculate new orientation
+
+         /*
                 final float alpha = (float) 0.8;
 
                 float[] gravity=new float[3];
@@ -242,16 +286,17 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
                 x = event.values[0] - gravity[0];
                 y = event.values[1] - gravity[1];
                 z = event.values[2] - gravity[2];
-
+*/
                 Dataa+="Acc," +x +","+y+","+z+",";
                 break;
 
 
-            case Sensor.TYPE_ROTATION_VECTOR:
+          /* case Sensor.TYPE_ROTATION_VECTOR:
                 // copy new magnetometer data into magnet array
                 //System.arraycopy(event.values, 0, magnet, 0, 3);
                 DataG+="Magnetic," +x +","+y+","+z+",";
                 break;
+                */
         }
 
 
@@ -262,19 +307,55 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
         ToggleButton tb=(ToggleButton) findViewById(R.id.TBStartRecording);
         if (tb.isChecked()) {
 
+            AverageACC[0]+=x;
+            AverageACC[1]+=y;
+            AverageACC[2]+=z;
+            windowAverage++;
 
-                // Write a message to the database
-            final String finalDataa = Dataa;
-            //int MyProgres=((Integer.parseInt((String) txtviewProgress.getText()))/count)*100;
-           //progressBar.setProgress(MyProgres);
+            if (windowAverage%AverageRate==0) {
+
+                windowAverage=0;
+                x=AverageACC[0]/AverageRate;
+                y=AverageACC[1]/AverageRate;
+                z=AverageACC[2]/AverageRate;
+
+                PointACC temp=new PointACC();
+                temp.GestureName=GetSelectedGestureName();
+                temp.timeStamp=timeStamp.toString();
+                temp.CurrecntLocationAlt=String.valueOf(CurrecntLocationAlt);
+                temp.CurrecntLocationLong=String.valueOf(CurrecntLocationLong);
+                temp.x=x;
+                temp.y=y;
+                temp.z=z;
+                AllPoints.add(temp);
+                if (AllPoints.size()==200/AverageRate)
+                {
+                    //   windowAverage=0;
+                    //   x=AverageACC[0]/AverageRate;
+                    //   y=AverageACC[1]/AverageRate;
+                    //   z=AverageACC[2]/AverageRate;
+                    // Write a message to the database
+                    final String finalDataa = Dataa;
+                    //int MyProgres=((Integer.parseInt((String) txtviewProgress.getText()))/count)*100;
+                    //progressBar.setProgress(MyProgres);
 
 
-            BackGroundWorker bg=new BackGroundWorker(this);
-            String GestureName=GetSelectedGestureName();
-            bg.setCountFinished(txtviewProgress);
-            bg.execute(timeStamp.toString(),String.valueOf(CurrecntLocationLong),String.valueOf(CurrecntLocationAlt),GestureName,String.valueOf(x),String.valueOf(y),String.valueOf(z));
-            count++;
-            txtviewTotalcount.setText(""+count);
+                    BackGroundWorker bg = new BackGroundWorker(this);
+                    // String GestureName = GetSelectedGestureName();
+                    bg.setCountFinished(txtviewProgress);
+                    //bg.execute(timeStamp.toString(), String.valueOf(CurrecntLocationLong), String.valueOf(CurrecntLocationAlt), GestureName, String.valueOf(x), String.valueOf(y), String.valueOf(z));
+
+                    bg.execute((ArrayList<PointACC>) AllPoints.clone());
+                    AllPoints.clear();
+
+                }
+                AverageACC=new float[3];
+                count++;
+                txtviewTotalcount.setText("" + count);
+            }
+
+
+
             //txtviewProgress.setText(count);
 
             /*Thread t = new Thread(new Runnable() {
@@ -339,9 +420,9 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
     {
         super.onResume();
         try {
-            sm.registerListener(this, MyGyro, SensorManager.SENSOR_DELAY_NORMAL);
+           // sm.registerListener(this, MyGyro, SensorManager.);
 //            sm.registerListener(this, LinearAcc, SensorManager.SENSOR_DELAY_NORMAL);
-            sm.registerListener(this, Gyro, SensorManager.SENSOR_DELAY_NORMAL);
+            sm.registerListener(this, Accelerometer, SensorManager.SENSOR_DELAY_UI);
         }
         catch (Exception e)
         {

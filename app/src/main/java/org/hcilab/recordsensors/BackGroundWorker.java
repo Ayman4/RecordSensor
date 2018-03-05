@@ -12,16 +12,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.spec.ECField;
+import java.util.ArrayList;
 
 /**
  * Created by ayman on 3/3/2018.
  */
 
-public class BackGroundWorker extends AsyncTask<String,Void,Integer> {
+public class BackGroundWorker extends AsyncTask<ArrayList<PointACC>,Void,Integer> {
 
     Context context;
     TextView countFinished;
@@ -29,43 +32,95 @@ public class BackGroundWorker extends AsyncTask<String,Void,Integer> {
 
     BackGroundWorker(Context ctx){context=ctx;}
     @Override
-    protected Integer doInBackground(String... params) {
+    protected Integer doInBackground(ArrayList<PointACC>... files) {
         String SaveRecordURL="http://hciegypt.com/main/record/Record.php";
+        ArrayList<PointACC> params=files[0];
+        String AllData="";
+        int i=0;
+        for (PointACC param:params) {
+i++;
+            AllData+= param.timeStamp+"#";
+            AllData+= param.CurrecntLocationLong+"#";
+            AllData+= param.CurrecntLocationAlt+"#";
+            AllData+=param.GestureName+"#";
+            AllData+= String.valueOf(param.x)+"#";
+            AllData+= String.valueOf(param.y)+"#";
+            AllData+= String.valueOf(param.z)+"#";
+            AllData+=i+"#";
+            AllData+="*";//end of line
+            }
         try {
-            String TripID=params[0];
-            String Long=params[1];
-            String Lat=params[2];
-            String GestureId=params[3];
-            String AccX=params[4];
-            String AccY=params[5];
-            String AccZ=params[6];
-
-
-            URL url=new URL(SaveRecordURL);
-            HttpURLConnection con= (HttpURLConnection)url.openConnection();
+            URL url = new URL(SaveRecordURL);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setDoInput(true);
             con.setDoOutput(true);
-            OutputStream out=con.getOutputStream();
-            BufferedWriter bf=new BufferedWriter(new OutputStreamWriter(out,"UTF-8"));
-            String Post_data= URLEncoder.encode("TripId","UTF-8")+"="+URLEncoder.encode(TripID,"UTF-8")+"&"
-                    +URLEncoder.encode("Long","UTF-8")+"="+URLEncoder.encode(Long,"UTF-8")+"&"
-                    +URLEncoder.encode("Lat","UTF-8")+"="+URLEncoder.encode(Lat,"UTF-8")+"&"
-                    +URLEncoder.encode("GestureId","UTF-8")+"="+URLEncoder.encode(GestureId,"UTF-8")+"&"
-                    +URLEncoder.encode("AccX","UTF-8")+"="+URLEncoder.encode(AccX,"UTF-8")+"&"
-                    +URLEncoder.encode("AccY","UTF-8")+"="+URLEncoder.encode(AccY,"UTF-8")+"&"
-                    +URLEncoder.encode("AccZ","UTF-8")+"="+URLEncoder.encode(AccZ,"UTF-8")+"&"
-
-                    ;
+            OutputStream out = con.getOutputStream();
+            BufferedWriter bf = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+            String Post_data = URLEncoder.encode("AllData", "UTF-8") + "=" + URLEncoder.encode(AllData, "UTF-8");
             bf.write(Post_data);
             bf.flush();
             bf.close();
             out.close();
 
-            String R="";
+            String R = "";
 
-            InputStream is=con.getInputStream();
-            BufferedReader br=new BufferedReader(new InputStreamReader(is,"iso-8859-1"));
+            InputStream is = con.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, "iso-8859-1"));
+/*
+            String line="";
+            while ((line=br.readLine())!=null)
+            {
+                R+=line;
+
+            }
+*/
+            br.close();
+            is.close();
+
+//            Log.i("Message from PHP", R);
+
+            con.disconnect();
+
+        }
+        catch (Exception e){}
+
+        /*Log.i("Size",String.valueOf(params.size()));
+        for (PointACC param:params) {
+            try {
+                String TripID = param.timeStamp;
+                String Long = param.CurrecntLocationLong;
+                String Lat = param.CurrecntLocationAlt;
+                String GestureId = param.GestureName;
+                String AccX = String.valueOf(param.x);
+                String AccY = String.valueOf(param.y);
+                String AccZ = String.valueOf(param.z);
+
+
+                URL url = new URL(SaveRecordURL);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("POST");
+                con.setDoInput(true);
+                con.setDoOutput(true);
+                OutputStream out = con.getOutputStream();
+                BufferedWriter bf = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                String Post_data = URLEncoder.encode("TripId", "UTF-8") + "=" + URLEncoder.encode(TripID, "UTF-8") + "&"
+                        + URLEncoder.encode("Long", "UTF-8") + "=" + URLEncoder.encode(Long, "UTF-8") + "&"
+                        + URLEncoder.encode("Lat", "UTF-8") + "=" + URLEncoder.encode(Lat, "UTF-8") + "&"
+                        + URLEncoder.encode("GestureId", "UTF-8") + "=" + URLEncoder.encode(GestureId, "UTF-8") + "&"
+                        + URLEncoder.encode("AccX", "UTF-8") + "=" + URLEncoder.encode(AccX, "UTF-8") + "&"
+                        + URLEncoder.encode("AccY", "UTF-8") + "=" + URLEncoder.encode(AccY, "UTF-8") + "&"
+                        + URLEncoder.encode("AccZ", "UTF-8") + "=" + URLEncoder.encode(AccZ, "UTF-8") + "&";
+                bf.write(Post_data);
+                bf.flush();
+                bf.close();
+                out.close();
+
+                String R = "";
+
+                InputStream is = con.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is, "iso-8859-1"));
 
             String line="";
             while ((line=br.readLine())!=null)
@@ -73,25 +128,24 @@ public class BackGroundWorker extends AsyncTask<String,Void,Integer> {
                 R+=line;
 
             }
-            br.close();
-            is.close();
 
-            Log.i("Message from PHP",R);
+                br.close();
+                is.close();
 
-            con.disconnect();
+                Log.i("Message from PHP", R);
 
-
-            return 1;
+                con.disconnect();
 
 
+                //return 1;
 
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
-
-    return 0;
+*/
+    return 1;
     }
     protected void onPostExecute(Integer result) {
         //progressBar.setVisibility(View.GONE);
