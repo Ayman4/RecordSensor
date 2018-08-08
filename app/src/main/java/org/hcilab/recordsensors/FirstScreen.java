@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -72,11 +73,15 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
     TextView txtviewloc;
     TextView txtviewTotalcount;
     TextView txtviewProgress;
-
+    EditText txtGestureName;
 
 
     public String GetSelectedGestureName()
     {
+        if (!txtGestureName.getText().equals(""))
+        {
+            return txtGestureName.getText().toString();
+        }
         ToggleButton Tb = (ToggleButton) findViewById(R.id.TBTurnLeft);
         if (Tb.isChecked())
         return "Turn Left";
@@ -155,6 +160,7 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
         txtviewloc = (TextView) findViewById(R.id.textViewLocation);
         txtviewTotalcount=(TextView) findViewById(R.id.textViewTotalCounts);
         txtviewProgress=(TextView) findViewById(R.id.textViewProgress);
+        txtGestureName=(EditText) findViewById(R.id.TxtGestureName);
 
 
 
@@ -392,8 +398,8 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
 
     @Override
     public void onLocationChanged(Location location) {
-        txtviewloc.setText("Long : "+location.getLongitude()+"Altitude: "+location.getAltitude());
-        CurrecntLocationAlt=location.getAltitude();
+        txtviewloc.setText("Long : "+location.getLongitude()+"Altitude: "+location.getLatitude());
+        CurrecntLocationAlt=location.getLatitude();
         CurrecntLocationLong=location.getLongitude();
     }
 
