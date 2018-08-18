@@ -65,7 +65,7 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
     float x;
     float y;
     float z;
-    float AverageACC[]=new float[3];
+    float AverageACC[]=new float[5];
     int windowAverage=0;
     TextView txtviewAcc;
     ArrayList<PointACC> AllPoints=new ArrayList<PointACC>(10);
@@ -74,6 +74,9 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
     TextView txtviewTotalcount;
     TextView txtviewProgress;
     EditText txtGestureName;
+
+    TextView  textViewAngleY;
+    TextView textViewAngleX;
 
 
     public String GetSelectedGestureName()
@@ -162,6 +165,8 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
         txtviewProgress=(TextView) findViewById(R.id.textViewProgress);
         txtGestureName=(EditText) findViewById(R.id.TxtGestureName);
 
+        textViewAngleY=(TextView)findViewById((R.id.textViewAngleY));
+        textViewAngleX=(TextView)findViewById((R.id.textViewAngleX));
 
 
         SeekBar s = (SeekBar) findViewById(R.id.seekBarAveraging);
@@ -217,7 +222,7 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
         count=1;
         countFinished=1;
         windowAverage=0;
-        AverageACC=new float[3];
+        AverageACC=new float[5];
         txtviewProgress.setText(""+0);
         AllPoints.clear();
 
@@ -270,6 +275,26 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
         y=event.values[1];
         z=event.values[2];
 
+        double x2, y2, z2; //24 bit
+
+        // Work out the squares
+        x2 = x*x;
+        y2 = y*y;
+        z2 = z*z;
+
+        //X Axis
+        double result=Math.sqrt(y2+z2);
+        result=x/result;
+        double accel_angle_x = Math.atan(result);
+
+        //Y Axis
+        result=Math.sqrt(x2+z2);
+        result=y/result;
+        double  accel_angle_y = Math.atan(result);
+
+        textViewAngleX.setText(Double.valueOf(accel_angle_x).toString());
+        textViewAngleY.setText(Double.valueOf(accel_angle_y).toString());
+
 
         String Dataa="";
         String DataG="";
@@ -316,6 +341,8 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
             AverageACC[0]+=x;
             AverageACC[1]+=y;
             AverageACC[2]+=z;
+            AverageACC[3]+=accel_angle_x;
+            AverageACC[4]+=accel_angle_y;
             windowAverage++;
 
             if (windowAverage%AverageRate==0) {
@@ -324,6 +351,9 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
                 x=AverageACC[0]/AverageRate;
                 y=AverageACC[1]/AverageRate;
                 z=AverageACC[2]/AverageRate;
+                accel_angle_x=AverageACC[3]/AverageRate;
+                accel_angle_y=AverageACC[4]/AverageRate;
+
 
                 PointACC temp=new PointACC();
                 temp.GestureName=GetSelectedGestureName();
@@ -333,7 +363,17 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
                 temp.x=x;
                 temp.y=y;
                 temp.z=z;
+                temp.AngleX=accel_angle_x;
+                temp.AngleY=accel_angle_y;
                 AllPoints.add(temp);
+
+
+
+
+
+
+
+
                 if (AllPoints.size()==200/AverageRate)
                 {
                     //   windowAverage=0;
@@ -355,7 +395,7 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
                     AllPoints.clear();
 
                 }
-                AverageACC=new float[3];
+                AverageACC=new float[5];
                 count++;
                 txtviewTotalcount.setText("" + count);
             }
@@ -428,7 +468,7 @@ public class FirstScreen extends AppCompatActivity implements SensorEventListene
         try {
            // sm.registerListener(this, MyGyro, SensorManager.);
 //            sm.registerListener(this, LinearAcc, SensorManager.SENSOR_DELAY_NORMAL);
-            sm.registerListener(this, Accelerometer, SensorManager.SENSOR_DELAY_UI);
+            sm.registerListener(this, Accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
         }
         catch (Exception e)
         {

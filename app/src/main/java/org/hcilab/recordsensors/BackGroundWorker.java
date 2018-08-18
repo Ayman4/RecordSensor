@@ -33,7 +33,8 @@ public class BackGroundWorker extends AsyncTask<ArrayList<PointACC>,Void,Integer
     BackGroundWorker(Context ctx){context=ctx;}
     @Override
     protected Integer doInBackground(ArrayList<PointACC>... files) {
-        String SaveRecordURL="http://hciegypt.com/main/record/Record.php";
+
+        String SaveRecordURL="http://www.hciegypt.com/main/record/Record.php";
         ArrayList<PointACC> params=files[0];
         String AllData="";
         int i=0;
@@ -47,6 +48,8 @@ i++;
             AllData+= String.valueOf(param.y)+"#";
             AllData+= String.valueOf(param.z)+"#";
             AllData+=i+"#";
+            AllData+= String.valueOf(param.AngleX)+"#";
+            AllData+= String.valueOf(param.AngleY)+"#";
             AllData+="*";//end of line
             }
         try {
@@ -63,12 +66,13 @@ i++;
             bf.close();
             out.close();
 
+
             String R = "";
 
             InputStream is = con.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(is, "iso-8859-1"));
-/*
-            String line="";
+
+            /*String line="";
             while ((line=br.readLine())!=null)
             {
                 R+=line;
@@ -78,12 +82,16 @@ i++;
             br.close();
             is.close();
 
-//            Log.i("Message from PHP", R);
+//         Log.i("Message from PHP", R);
 
             con.disconnect();
 
         }
-        catch (Exception e){}
+        catch (Exception e){
+
+            Log.i("Message from ayman", e.getMessage());
+
+        }
 
         /*Log.i("Size",String.valueOf(params.size()));
         for (PointACC param:params) {

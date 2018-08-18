@@ -119,8 +119,8 @@
         android:id="@+id/textViewTotalCounts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="19dp"
         android:text="0"
         app:layout_constraintLeft_toLeftOf="@+id/TBStartRecording"
         app:layout_constraintTop_toBottomOf="@+id/TBStartRecording" />
@@ -147,4 +147,31 @@
         app:layout_constraintLeft_toLeftOf="@+id/seekBarAveraging"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/textViewProgress" />
+
+    <TextView
+        android:id="@+id/textViewAngleX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_marginBottom="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/TBStartRecording"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/TBStartRecording"
+        app:layout_constraintVertical_bias="0.505"
+        app:layout_constraintLeft_toRightOf="@+id/TBStartRecording" />
+
+    <TextView
+        android:id="@+id/textViewAngleY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        android:text="TextView"
+        app:layout_constraintLeft_toLeftOf="@+id/TBStartRecording"
+        app:layout_constraintRight_toLeftOf="@+id/TBStartRecording"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/TBStartRecording"
+        app:layout_constraintBottom_toBottomOf="@+id/TBStartRecording" />
 </android.support.constraint.ConstraintLayout>

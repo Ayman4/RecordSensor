@@ -12,4 +12,6 @@ public class PointACC {
     float x;
     float y;
     float z;
+    double AngleX;
+    double AngleY;
 }
